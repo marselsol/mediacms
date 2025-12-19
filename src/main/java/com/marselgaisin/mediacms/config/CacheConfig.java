@@ -11,12 +11,19 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
     private static final String CACHE_KEY_PREFIX = "mediacms::";
     private static final Duration DEFAULT_TTL = Duration.ofMinutes(10);
+    private final GenericJackson2JsonRedisSerializer redisSerializer;
+
+    public CacheConfig(ObjectMapper objectMapper) {
+        this.redisSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+    }
 
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
@@ -25,7 +32,7 @@ public class CacheConfig {
                 .disableCachingNullValues()
                 .computePrefixWith(cacheName -> CACHE_KEY_PREFIX + cacheName + "::")
                 .serializeValuesWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                        .fromSerializer(redisSerializer));
     }
 
     @Bean
