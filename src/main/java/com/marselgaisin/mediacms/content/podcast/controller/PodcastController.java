@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,13 +23,10 @@ import com.marselgaisin.mediacms.content.podcast.service.PodcastService;
 
 @RestController
 @RequestMapping("/api/podcasts")
+@RequiredArgsConstructor
 public class PodcastController {
 
     private final PodcastService podcastService;
-
-    public PodcastController(PodcastService podcastService) {
-        this.podcastService = podcastService;
-    }
 
     @PostMapping
     public ResponseEntity<PodcastResponse> create(@Valid @RequestBody PodcastCreateRequest request) {
