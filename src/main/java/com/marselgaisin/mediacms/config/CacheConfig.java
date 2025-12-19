@@ -11,7 +11,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 @EnableCaching
@@ -22,7 +26,13 @@ public class CacheConfig {
     private final GenericJackson2JsonRedisSerializer redisSerializer;
 
     public CacheConfig(ObjectMapper objectMapper) {
-        this.redisSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+        ObjectMapper redisMapper = objectMapper.copy();
+        redisMapper.registerModule(new JavaTimeModule());
+        redisMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        redisMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance,
+                ObjectMapper.DefaultTyping.EVERYTHING,
+                JsonTypeInfo.As.PROPERTY);
+        this.redisSerializer = new GenericJackson2JsonRedisSerializer(redisMapper);
     }
 
     @Bean
