@@ -5,8 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
+@NoArgsConstructor
+@Data
 public class VideoCreateRequest {
 
     @NotBlank(message = "Title is required")
@@ -21,31 +25,4 @@ public class VideoCreateRequest {
     @NotNull(message = "Duration is required")
     @Positive(message = "Duration must be positive")
     private Integer durationSeconds;
-
-    public VideoCreateRequest() {
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Integer getDurationSeconds() {
-        return durationSeconds;
-    }
-
-    public void setDurationSeconds(Integer durationSeconds) {
-        this.durationSeconds = durationSeconds;
-    }
 }
